@@ -77,19 +77,19 @@ class HashTableTest {
         assertEquals(value2, hashTable.get(key));
     }
 
-    @Test
-    public void removeKey() {
-        // Arrange
-        HashTable<Integer, String> hashTable = new HashTable<>();
-        Integer key = 0;
-        String value = "value";
-        // Act
-        hashTable.put(key, value);
-        String remove = hashTable.remove(key);
-        // Assert
-        assertNull(hashTable.get(key));
-        assertEquals(value, remove);
-    }
+//    @Test
+//    public void removeKey() {
+//        // Arrange
+//        HashTable<Integer, String> hashTable = new HashTable<>();
+//        Integer key = 0;
+//        String value = "value";
+//        // Act
+//        hashTable.put(key, value);
+//        String remove = hashTable.remove(key);
+//        // Assert
+//        assertNull(hashTable.get(key));
+//        assertEquals(value, remove);
+//    }
 
     @Test
     public void clearDict() {
