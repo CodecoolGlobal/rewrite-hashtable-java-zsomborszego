@@ -16,12 +16,12 @@ public class HashTable<K, V> {
     public HashTable() {
         buckets = new ArrayList<>();
         for (int i = 0; i < 16; i++) {
-            buckets.add(new LinkedList<>());
+            buckets.add(new LinkedList<>()); // <= we dont need to add Entry for it
         }
     }
 
     private int getBucketIndexForKey(K key) {
-        throw new RuntimeException("FIXME");
+        return Math.abs(key.hashCode() % bucketsSize);
     }
 
     private List<Entry> getBucketAtIndex(int position) {
@@ -32,17 +32,28 @@ public class HashTable<K, V> {
         throw new RuntimeException("FIXME");
     }
 
+    public boolean isOverrideValue(K key, V value, int oustsideListindex){
+        LinkedList<Entry> insideList = (LinkedList<Entry>) buckets.get(oustsideListindex);
+        for (int i = 0; i < insideList.size(); i++) {
+            if (insideList.get(i).key == key ){
+                insideList.get(i).value = value;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public V get(K key) {
         int outsideListIndex;
         if (key == null){
             outsideListIndex = 0;
         }else {
-            outsideListIndex = getHashValu(key);
+            outsideListIndex = getBucketIndexForKey(key);
         }
         LinkedList<Entry> insideList = (LinkedList<Entry>) buckets.get(outsideListIndex);
         for (Entry entry : insideList) {
             if (entry.key == key) {
-                return (V) entry.value;
+                return (V) entry.value; // <=    check with mentor
             }
         }
         return null;
@@ -53,23 +64,39 @@ public class HashTable<K, V> {
         if (key == null){
             outListIndex = 0;
         }else {
-            outListIndex = getHashValu(key);
+            outListIndex = getBucketIndexForKey(key);
         }
-        Entry<K, V> newElement = new Entry<>(key, value);
-        buckets.get(outListIndex).add(newElement);
+        if (!isOverrideValue(key, value, outListIndex)){
+            Entry<K, V> newElement = new Entry<>(key, value);
+            buckets.get(outListIndex).add(newElement);
+        }
     }
 
-    public Integer remove(K key) {
-        throw new RuntimeException("FIXME");
+    public V remove(K key) {
+        V ramovedValue = null;
+        int outListIndex;
+        if (key == null){
+            outListIndex = 0;
+        }else {
+            outListIndex = getBucketIndexForKey(key);
+        }
+        LinkedList<Entry> insideList = (LinkedList<Entry>) buckets.get(outListIndex);
+        for (int i = 0; i <insideList.size() ; i++) {
+            if (insideList.get(i).key == key){
+                ramovedValue = (V) insideList.get(i).value;
+                insideList.remove(insideList.get(i));
+            }
+        }
+        return ramovedValue;
     }
 
     public void clear() {
-        throw new RuntimeException("FIXME");
+        buckets = new ArrayList<>();
+        for (int i = 0; i < 16; i++) {
+            buckets.add(new LinkedList<>()); // <= we dont need to add Entry for it
+        };
     }
 
-    private int getHashValu(K key){
-        return Math.abs(key.hashCode() % bucketsSize);
-    }
 }
 
 class Entry<K, V> {
